@@ -16,7 +16,6 @@
 import gradio as gr
 import ssl
 import nltk
-import os
 import openai
 import re
 from gradio import components
@@ -25,12 +24,11 @@ from config import get_cfg_defaults
 import six
 import spacy
 from nltk.stem.porter import PorterStemmer
-from rouge_score.rouge_scorer import _create_ngrams, _score_ngrams
-import six
+from rouge_score.rouge_scorer import _create_ngrams
 import numpy as np
+from openai import AzureOpenAI
 
-openai_key = "" ### OpenAI AIP key for access to the re-generation service, users are suggested to delete the key after usage to avoid potential leakage of key
-openai.api_key = openai_key
+
 temperature = 0.7  ### This parameter controls text quality of chatgpt, by default it was set to 0.7 in the website version of ChatGPT.
 max_new_tokens = 300  ### maximum length of generated texts from chatgpt
 regen_number = 30  ### for faster response, users can set this value to smaller ones, such as 20 or 10, which will degenerate performance a little bit
@@ -289,7 +287,6 @@ def detection(text, option, config):
     #                                             temperature=temperature,
     #                                             max_tokens=max_new_tokens,
     #                                             n=regen_number)
-    from openai import AzureOpenAI
     client = AzureOpenAI(
         api_key=config.AZURE_OPENAI.KEY,
         api_version="2024-02-01",
@@ -310,7 +307,7 @@ def detection(text, option, config):
     mx_v = 0
     for i in range(regen_number):  # len(human_half)
         temp1 = {}
-        gen_text = human_gen_text['choices'][i]['message']['content']
+        gen_text = completion['choices'][i]['message']['content']
 
         ###### optional #######
         gen_text_ = truncate_string_by_words(gen_text, max_words-150)
@@ -360,7 +357,7 @@ def detection(text, option, config):
         max_index = mx  # gpt_score.index(max_value)
         max_ind_list.append(max_index)
         most_matched_generatedtext.append(
-            human_gen_text['choices'][max_index]['message']['content'])
+            completion['choices'][max_index]['message']['content'])
     print(gpt_scores[0])
 
     if gpt_scores[0] > threshold:

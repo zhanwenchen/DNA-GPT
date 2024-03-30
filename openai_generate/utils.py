@@ -11,7 +11,7 @@ nlp = spacy.load('en_core_web_sm')
 stopwords = nlp.Defaults.stop_words
 
 def get_openai_response(prompt: str, max_tokens = 150, temperature = 0.7, top_p = 1, n = 1, logprobs = 1, stop = None, echo = True):
-    response = openai.Completion.create(engine="text-davinci-003",
+    response = openai.Completion.create(engine="gpt-3.5-turbo",
                                         prompt=prompt,
                                         max_tokens=max_tokens,
                                         temperature = temperature,
@@ -26,7 +26,7 @@ def get_openai_response(prompt: str, max_tokens = 150, temperature = 0.7, top_p 
     return gen_text
 
 def get_davinci003_response(prompt: str, max_tokens = 150, temperature = 0.7, top_p = 1, n = 1, logprobs = 1, stop = None, echo = True):
-    response = openai.Completion.create(engine="text-davinci-003",
+    response = openai.Completion.create(engine="gpt-3.5-turbo",
                                         prompt=prompt,
                                         max_tokens=max_tokens,
                                         temperature = temperature,
@@ -55,7 +55,7 @@ def get_gpt4_qa_response(prompt_text, temperature = 0.7, max_tokens=1000):
     messages = [{"role":"system", "content": "You are a helpful assistant that answers the question provided."},
                 {"role":"user", "content": prompt_text}]
     response = openai.ChatCompletion.create(
-                model = "gpt-4-0314",
+                model = "gpt-4",
                 messages = messages,
                 temperature = temperature,
                 max_tokens = max_tokens
@@ -66,7 +66,7 @@ def get_gpt4_completion_response(prompt_text, max_tokens):
     messages = [{"role":"system", "content": "You are a helpful assistant that continues the passage from the sentences provided."},
                 {"role":"user", "content": prompt_text}]
     response = openai.ChatCompletion.create(
-                model = "gpt-4-0314",
+                model = "gpt-4",
                 messages = messages,
                 temperature = 0.7,
                 max_tokens = max_tokens
